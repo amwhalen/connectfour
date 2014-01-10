@@ -1,3 +1,4 @@
+import exceptions as errors
 
 #
 # Connect Four
@@ -20,32 +21,35 @@
 # By starting in the two adjacent columns, the first player allows the second player to reach a draw;
 # by starting with the four outer columns, the first player allows the second player to force a win.
 
-
 class Board:
 
     _board = []
+    playerTurn = 1
 
     def __init__(self):
         """
         Constructor
         """
-        self.reset
+        self.reset()
 
     def placeToken(self, player, column):
         """
         Places a player's token in the specified column
         """
         if player != 1 and player != 2:
-            return False
+            raise errors.InvalidPlayerError('Invalid player.')
+        if player != self.playerTurn:
+            raise errors.OutOfTurnError('Not your turn.')
         if column < 0 or column > 6:
-            return False
+            raise errors.InvalidColumnError('Invalid column.')
         # attempt to drop the token in
         for y in xrange(0, 6):
             if self._board[column][y] == 0:
                 self._board[column][y] = player
+                self.playerTurn = 2 if (self.playerTurn == 1) else 1
                 return True
         # the column is full!
-        return False
+        raise errors.FullColumnError('Column is full.')
 
     def isColumnFull(self, col):
         """
@@ -56,7 +60,7 @@ class Board:
                 return False
         return True
 
-    def isBoardFull(self):
+    def isFull(self):
         """
         Returns True if the board is full
         """
@@ -64,6 +68,19 @@ class Board:
             if not self.isColumnFull(x):
                 return False
         return True
+
+    def peek(self, col):
+        """
+        Returns the token value at the top of the given column
+        """
+        if col < 0 or col > 6:
+            raise errors.InvalidColumnError('Invalid column.')
+        # look at this column from top to bottom
+        for y in xrange(5, -1, -1):
+            cell = self._board[col][y]
+            if cell != 0:
+                return cell
+        return 0
 
     def __str__(self):
         """
@@ -79,7 +96,9 @@ class Board:
                 else:
                     cStr = '.'
                 rowString += cStr + " "
-            boardStr += rowString + "\n"
+            boardStr += rowString
+            if y > 0:
+                boardStr += "\n"
         return boardStr
 
     def reset(self):
@@ -96,15 +115,17 @@ class Board:
     def isValid(self):
         """
         Returns True if the board is in a valid state
-        Does not check (yet) for the right number of each token color
         """
         # if there are tokens in a column, they must obey "gravity"
         # look at each column from left to right
+        tokens = {1: 0, 2: 0}
         for x in xrange(0, 7):
             columnHasTokens = False
             # look at this column from top to bottom
             for y in xrange(5, -1, -1):
                 cell = self._board[x][y]
+                if cell != 0:
+                    tokens[cell] += 1
                 if columnHasTokens:
                     if cell == 0:
                         # no gaps once a token has been found!
@@ -113,16 +134,23 @@ class Board:
                     if cell != 0:
                         # found first token in this column
                         columnHasTokens = True
-        return True
+        # at this point we know the columns obey gravity
+        # now check that token counts are valid
+        if self.isFull():
+            # if full, p1 and p2 should have equal numbers of tokens
+            return tokens[1] == tokens[2]
+        else:
+            # if not full, p1 and p2 should have equal or +/-1 tokens
+            return (tokens[1] - tokens[2]) in [0, 1, -1]
 
     def winningState(self):
         """
         Returns 0 if the board is not in a winning state
-        Returns 1 if Red is in a winning state
-        Returns 2 if Black is in a winning state
+        Returns 1 if Player 1 is in a winning state
+        Returns 2 if Player 2 is in a winning state
         """
         if not self.isValid():
-            return 0
+            raise errors.InvalidBoardError('Board is not valid.')
         for x in xrange(0, 7):
             for y in xrange(0, 6):
                 if self.__isLineStartingAt(x, y):
@@ -222,7 +250,7 @@ class Board:
         self._board[2][2] = 1
         self._board[3][3] = 1
         self._board[1][0] = 1
-        self._board[2][0] = 1
+        self._board[2][0] = 2
         self._board[2][1] = 2
         self._board[3][0] = 2
         self._board[3][1] = 2

@@ -16,7 +16,7 @@ def playLotsOfGames(numGames):
         player = 1
         tokenWasPlaced = True
         turns = 0
-        while(not board.isBoardFull() and board.winningState() == 0):
+        while(not board.isFull() and board.winningState() == 0):
             column = random.randint(0, 6)
             while(board.isColumnFull(column)):
                 column = random.randint(0, 6)

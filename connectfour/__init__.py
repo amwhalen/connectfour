@@ -1,1 +1,2 @@
-from board import Board
+import board
+import exceptions

@@ -14,7 +14,7 @@ cf.reset()
 player = 1
 tokenWasPlaced = True
 turns = 0
-while(not cf.isBoardFull() and cf.winningState() == 0):
+while(not cf.isFull() and cf.winningState() == 0):
     column = random.randint(0, 6)
     while(cf.isColumnFull(column)):
         column = random.randint(0, 6)
