@@ -1,7 +1,8 @@
 from connectfour.board import Board
+from connectfour.players.player import Player
 
 # just tries to cover up the other player's tokens
-class CoverPlayer():
+class CoverPlayer(Player):
 
     def getName(self):
         return "Cover"

@@ -1,2 +1,3 @@
 import board
+import board_factory
 import exceptions

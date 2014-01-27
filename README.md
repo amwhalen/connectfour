@@ -8,7 +8,100 @@ This class takes care of dropping tokens into the board while enforcing (most) g
 The board tries to keep itself from entering an invalid state, like too many tokens in one column.
 A method is defined to calculate if the board contains a winning state for either player.
 
-The play.py file runs many simulated games and prints the results.
+Here's an example string representation of the 7x6 board:
+```
+0 1 2 3 4 5 6
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+1 . . . . . . 
+1 . . 2 . . .
+```
+
+Using the Board
+---------------
+```python
+>>> import connectfour
+>>> b = connectfour.board.Board()
+>>> print(b)
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+>>> b.placeToken(b.getPlayerTurn(), 3)
+True
+>>> b.placeToken(b.getPlayerTurn(), 2)
+True
+>>> print(b)
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . 2 1 . . . 
+>>> b.undo()
+True
+>>> print(b)
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . 1 . . . 
+```
+
+Querying the State of the Game
+------------------------------
+```python
+>>> print(b)
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . 2 1 . . . 
+>>> b.isFull()
+False
+>>> b.isColumnFull(3)
+False
+>>> b.peek(3)
+1
+>>> b.getPlayerTurn()
+1
+>>> b.getNumberOfMoves()
+2
+>>> b.getMoves()
+[3, 2]
+>>> b.getScore(1)
+0
+```
+
+Playing a Game
+--------------
+There is a StandardGame class that uses the Board to run a standard game.
+This code will play a standard game with a Human player as player 1, and an AI player using the Negamax algorithm to depth 4 as player 2.
+The game can be played on the command line and will accept input from the human player.
+```python
+import connectfour as cf
+import connectfour.players as players
+import connectfour.games.standard
+
+game = connectfour.games.standard.StandardGame(p1=players.human.HumanPlayer(), p2=players.negamax.NegamaxPlayer(4))
+game.play()
+```
+
+AI
+--
+Included are some Player classes that will choose moves based on algorithms or from user input:
+
+CoverPlayer - A player that tries to cover up the other player's last move with a token. Extremely easy.
+RandomPlayer - A player whose moves are completely random. Easy.
+NegamaxAlphaBetaPruningPlayer - A quick but smart player that sometimes chooses speed over an optimal move. Medium to incredibly difficult.
+NegamaxPlayer - A slow but very smart player. Medium to incredibly difficult.
+HumanPlayer - A player with a command line interface in order to interact with a real live person.
 
 License
 -------

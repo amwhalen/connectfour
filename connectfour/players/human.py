@@ -1,7 +1,8 @@
 import connectfour
+from connectfour.players.player import Player
 
 # gets input from a human
-class HumanPlayer():
+class HumanPlayer(Player):
 
     def getName(self):
         return "Human"

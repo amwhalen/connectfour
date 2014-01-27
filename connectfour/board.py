@@ -21,10 +21,29 @@ import exceptions as errors
 # By starting in the two adjacent columns, the first player allows the second player to reach a draw;
 # by starting with the four outer columns, the first player allows the second player to force a win.
 
-class Board:
+# winning segments (39 total):
+#
+# horizontal segments (15):
+# 0-3, 1-5, 2-6
+#
+# vertical segments (12):
+# 0-3, 1-5
+#
+# diagonal segments (12):
+# 0,2->3,5
+# 0,1->3,4
+# 1,2->4,5
+# 0,0->3,3
+# 1,1->4,4
+# 2,2->5,5
+# 1,0->4,3
+# 2,1->5,4
+# 3,2->6,5
+# 2,0->5,3
+# 3,1->6,4
+# 3,0->6,3
 
-    _board = []
-    playerTurn = 1
+class Board:
 
     def __init__(self):
         """
@@ -46,10 +65,31 @@ class Board:
         for y in xrange(0, 6):
             if self._board[column][y] == 0:
                 self._board[column][y] = player
+                self.moves.append(column)
                 self.playerTurn = 2 if (self.playerTurn == 1) else 1
                 return True
         # the column is full!
         raise errors.FullColumnError('Column is full.')
+
+    def undo(self):
+        """
+        Undo operation for the last move
+        """
+        if len(self.moves) == 0:
+            return False
+        lastMove = self.moves[-1]
+        # look at this column from top to bottom
+        for y in xrange(5, -1, -1):
+            if self._board[lastMove][y] == 0:
+                # ignore
+                continue
+            else:
+                # remove the token
+                self._board[lastMove][y] = 0
+                break
+        self.moves.pop()
+        self.playerTurn = 2 if (self.playerTurn == 1) else 1
+        return True
 
     def isColumnFull(self, col):
         """
@@ -64,7 +104,7 @@ class Board:
         """
         Returns True if the board is full
         """
-        for x in xrange(0, 6):
+        for x in xrange(0, 7):
             if not self.isColumnFull(x):
                 return False
         return True
@@ -81,6 +121,24 @@ class Board:
             if cell != 0:
                 return cell
         return 0
+
+    def getMoves(self):
+        """
+        Returns a list of the moves taken in this game.
+        """
+        return self.moves
+
+    def getNumberOfMoves(self):
+        """
+        Returns the total number of moves taken in this game so far
+        """
+        return len(self.moves)
+
+    def getPlayerTurn(self):
+        """
+        Returns the number (1,2) of the player whose turn it is
+        """
+        return self.playerTurn
 
     def __str__(self):
         """
@@ -106,6 +164,8 @@ class Board:
         Sets up the empty game board
         """
         self._board = []
+        self.playerTurn = 1
+        self.moves = []
         for x in xrange(0, 7):
             col = []
             for y in xrange(0, 6):
@@ -190,68 +250,111 @@ class Board:
         # if we get here, then they all match
         return True
 
-    def generatePlayerTwoHorizontalWinBoard(self):
-        self.reset()
-        self._board[0][0] = 1
-        self._board[1][0] = 1
-        self._board[2][0] = 1
-        self._board[3][0] = 2
-        self._board[4][0] = 2
-        self._board[5][0] = 2
-        self._board[6][0] = 2
+    def getScore(self, player):
+        """
+        Returns the current score relative to the given player
+        """
+        scores = self.getRawScores()
 
-    def generatePlayerTwoVerticalWinBoard(self):
-        self.reset()
-        self._board[0][0] = 2
-        self._board[0][1] = 2
-        self._board[0][2] = 2
-        self._board[0][3] = 2
-        self._board[3][0] = 1
-        self._board[4][0] = 1
-        self._board[5][0] = 1
+        # make sure a win or a loss has a bigger impact than other scores
+        if scores[1] == 1000 or scores[2] == 1000:
+            if scores[player] == 1000:
+                return 1000
+            else:
+                return -1000
 
-    def generatePlayerTwoDiagonalWinBoard(self):
-        self.reset()
-        self._board[0][0] = 2
-        self._board[1][1] = 2
-        self._board[2][2] = 2
-        self._board[3][3] = 2
-        self._board[1][0] = 2
-        self._board[2][0] = 1
-        self._board[2][1] = 1
-        self._board[3][0] = 1
-        self._board[3][1] = 1
-        self._board[3][2] = 1
+        # score depends on the player
+        if player == 1:
+            return scores[1] - scores[2]
+        else:
+            return scores[2] - scores[1]
 
-    def generatePlayerOneHorizontalWinBoard(self):
-        self.reset()
-        self._board[0][0] = 2
-        self._board[1][0] = 2
-        self._board[2][0] = 2
-        self._board[3][0] = 1
-        self._board[4][0] = 1
-        self._board[5][0] = 1
-        self._board[6][0] = 1
+    def getRawScores(self):
+        """
+        Determines the score for each player based on these weights:
+        Tokens  Weight
+        1       0
+        2       1
+        3       4
+        4       Infinite
+        """
+        c = self.getCounts()
 
-    def generatePlayerOneVerticalWinBoard(self):
-        self.reset()
-        self._board[0][0] = 1
-        self._board[0][1] = 1
-        self._board[0][2] = 1
-        self._board[0][3] = 1
-        self._board[3][0] = 2
-        self._board[4][0] = 2
-        self._board[5][0] = 2
+        # if there's a segment with 4, it's a win for this player
+        if c[1][4] >= 1:
+            p1Score = 1000
+        else:
+            p1Score = c[1][2] * 1 + c[1][3] * 4
 
-    def generatePlayerOneDiagonalWinBoard(self):
-        self.reset()
-        self._board[0][0] = 1
-        self._board[1][1] = 1
-        self._board[2][2] = 1
-        self._board[3][3] = 1
-        self._board[1][0] = 1
-        self._board[2][0] = 2
-        self._board[2][1] = 2
-        self._board[3][0] = 2
-        self._board[3][1] = 2
-        self._board[3][2] = 2
+        # if there's a segment with 4, it's a win for this player
+        if c[2][4] >= 1:
+            p2Score = 1000
+        else:
+            p2Score = c[2][2] * 1 + c[2][3] * 4
+
+        return [0, p1Score, p2Score]
+
+    def getCounts(self):
+        """
+        Returns a dictionary of segment counts as such:
+        Tokens  P1  P2
+        0       60  56 
+        1        7  10
+        2        1   1
+        3        1   1
+        4        0   1
+        """
+        counts = {1: [0, 0, 0, 0, 0], 2: [0, 0, 0, 0, 0]}
+        if not self.isValid():
+            raise errors.InvalidBoardError('Board is not valid.')
+        for x in xrange(0, 7):
+            for y in xrange(0, 6):
+                segmentCounts = self.scoreSegmentsAt(x, y)
+                for i in xrange(0, 5):
+                    counts[1][i] += segmentCounts[1][i]
+                    counts[2][i] += segmentCounts[2][i]
+        return counts
+
+    def scoreSegmentsAt(self, x, y):
+        """
+        Returns a dictionary of segment counts for each player at the given coordinates
+        """
+        # horizontal + vertical + diagonal up + diagonal down
+        hor = self.scoreSegment(x, y, 1, 0)
+        ver = self.scoreSegment(x, y, 0, 1)
+        dup = self.scoreSegment(x, y, 1, 1)
+        ddn = self.scoreSegment(x, y, 1, -1)
+
+        counts = {1: [0, 0, 0, 0, 0], 2: [0, 0, 0, 0, 0]}
+        if hor != False:
+            counts[1][hor[1]] += 1
+            counts[2][hor[2]] += 1
+        if ver != False:
+            counts[1][ver[1]] += 1
+            counts[2][ver[2]] += 1
+        if dup != False:
+            counts[1][dup[1]] += 1
+            counts[2][dup[2]] += 1
+        if ddn != False:
+            counts[1][ddn[1]] += 1
+            counts[2][ddn[2]] += 1
+
+        return counts
+
+    def scoreSegment(self, x, y, stepX, stepY):
+        """
+        Returns a list containing the counts of each player's tokens in this segment, or False if it's not a 4-segment
+        """
+        counts = [0, 0, 0]
+        # iterate over 3 more cells
+        for i in xrange(0, 4):
+            cX = x + i * stepX
+            cY = y + i * stepY
+            # are these coordinates OK?
+            if len(self._board) > cX and 0 <= cX and len(self._board[cX]) > cY and 0 <= cY:
+                # give a point to the player with this cell
+                counts[self._board[cX][cY]] += 1
+            else:
+                return False
+        #print "segment: %d,%d -> %d,%d" % (x, y, cX, cY)
+        return counts

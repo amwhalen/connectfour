@@ -1,4 +1,6 @@
+import player
 import cover
-import perfect
 import random
 import human
+import negamax
+import negamaxabp

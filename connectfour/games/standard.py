@@ -23,15 +23,15 @@ class StandardGame:
             return False
 
     def takeTurn(self, player):
-        # player 1
         if self.verbose:
             self.printGameBoard()
+            if not self.players[player].isHuman():
+                print "%s is thinking..." % self.players[player].getName()
 
         # make a copy so it doesn't mess with the game
         board = deepcopy(self.board)
         move = self.players[player].getMove(board, player)
         self.board.placeToken(player, move)
-        self.turns += 1
 
         if self.verbose:
             print "Player "+str(player)+" ("+self.players[player].getName()+") places in column " + str(move) + ":"
@@ -43,7 +43,10 @@ class StandardGame:
             return self.board.winningState()
 
     def getTurns(self):
-        return self.turns
+        return self.board.getNumberOfMoves()
+
+    def getMoves(self):
+        return self.board.getMoves()
 
     def getBoard(self):
         return self.board
@@ -52,7 +55,7 @@ class StandardGame:
         return players[player]
 
     def play(self):
-        self.turns = 0
+        self.board.reset()
 
         while not self.isGameOver():
 
@@ -70,7 +73,7 @@ class StandardGame:
                 print "The game board somehow became invalid! No winner!"
             else:
                 if not self.board.winningState() == 0:
-                    print "Player " + str(self.board.winningState()) + " ("+self.players[self.board.winningState()].getName()+") wins in " + str(self.turns) + " turns."
+                    print "Player " + str(self.board.winningState()) + " ("+self.players[self.board.winningState()].getName()+") wins in " + str(self.getTurns()) + " turns."
                 else:
-                    print "Draw in " + str(self.turns) + " turns."
+                    print "Draw in " + str(self.getTurns()) + " turns."
                 print

@@ -1,8 +1,10 @@
+# absolute import so we import the 'random' module and not this file
 from __future__ import absolute_import
 import connectfour
 import random
+from connectfour.players.player import Player
 
-class RandomPlayer:
+class RandomPlayer(Player):
 
     def getName(self):
         return "Random"
@@ -19,8 +21,8 @@ class RandomPlayer:
         while True:
             column = random.randint(0, 6)
             try:
-                if board.placeToken(player, column):
-                    return column
+                board.placeToken(player, column)
+                return column
             except connectfour.exceptions.FullColumnError:
                 pass
             except Exception as e:
