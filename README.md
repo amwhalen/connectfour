@@ -51,6 +51,14 @@ True
 . . . . . . . 
 . . . . . . . 
 . . . 1 . . . 
+>>> b.reset()
+>>> print(b)
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
+. . . . . . . 
 ```
 
 Querying the State of the Game
@@ -77,6 +85,8 @@ False
 [3, 2]
 >>> b.getScore(1)
 0
+>>> b.winningState()
+0
 ```
 
 Playing a Game
@@ -93,15 +103,15 @@ game = connectfour.games.standard.StandardGame(p1=players.human.HumanPlayer(), p
 game.play()
 ```
 
-AI
---
+AI Players
+----------
 Included are some Player classes that will choose moves based on algorithms or from user input:
 
-CoverPlayer - A player that tries to cover up the other player's last move with a token. Extremely easy.
-RandomPlayer - A player whose moves are completely random. Easy.
-NegamaxAlphaBetaPruningPlayer - A quick but smart player that sometimes chooses speed over an optimal move. Medium to incredibly difficult.
-NegamaxPlayer - A slow but very smart player. Medium to incredibly difficult.
-HumanPlayer - A player with a command line interface in order to interact with a real live person.
+**CoverPlayer** - A player that tries to cover up the other player's last move with a token. Extremely easy.
+**RandomPlayer** - A player whose moves are completely random. Easy.
+**NegamaxAlphaBetaPruningPlayer** - A quick but smart player that sometimes chooses speed over an optimal move. Medium to incredibly difficult.
+**NegamaxPlayer** - A slow but very smart player. Medium to incredibly difficult.
+**HumanPlayer** - A player with a command line interface in order to interact with a real live person.
 
 License
 -------
