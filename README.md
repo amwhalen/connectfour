@@ -107,11 +107,20 @@ AI Players
 ----------
 Included are some Player classes that will choose moves based on algorithms or from user input:
 
-**CoverPlayer** - A player that tries to cover up the other player's last move with a token. Extremely easy.
-**RandomPlayer** - A player whose moves are completely random. Easy.
-**NegamaxAlphaBetaPruningPlayer** - A quick but smart player that sometimes chooses speed over an optimal move. Medium to incredibly difficult.
-**NegamaxPlayer** - A slow but very smart player. Medium to incredibly difficult.
-**HumanPlayer** - A player with a command line interface in order to interact with a real live person.
+**CoverPlayer**
+A player that tries to cover up the other player's last move with a token. Extremely easy.
+
+**RandomPlayer**
+A player whose moves are completely random. Easy.
+
+**NegamaxAlphaBetaPruningPlayer**
+A quick but smart player that sometimes chooses speed over an optimal move. Medium to incredibly difficult.
+
+**NegamaxPlayer**
+A slow but very smart player. Medium to incredibly difficult.
+
+**HumanPlayer**
+A player with a command line interface in order to interact with a real live person.
 
 License
 -------
