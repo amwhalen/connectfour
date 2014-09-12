@@ -25,6 +25,8 @@
      <arg value="--with-coverage" />
      <arg value="--cover-xml" />
      <arg value="--cover-xml-file=${basedir}/build/logs/coverage.xml" />
+     <arg value="--cover-html" />
+     <arg value="--cover-html-dir=${basedir}/build/coverage" />
    </exec>
  </target>
 

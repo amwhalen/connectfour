@@ -1,3 +1,4 @@
 *.pyc
 .coverage
 build/logs
+build/coverage
