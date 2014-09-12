@@ -2,9 +2,9 @@
 
 <project name="connectfour" default="build">
 
- <target name="build" depends="prepare,lint"/>
+ <target name="build" depends="prepare,lint,test"/>
 
- <target name="build-parallel" depends="prepare,lint"/>
+ <target name="build-parallel" depends="prepare,lint,test"/>
 
  <target name="clean" description="Cleanup build artifacts">
   <delete dir="${basedir}/build/logs"/>
@@ -19,7 +19,13 @@
  </target>
 
  <target name="test" description="Run unit tests">
-   <exec executable="build/unittest.sh"></exec>
+   <exec executable="nosetests">
+     <arg value="--with-xunit" />
+     <arg value="--xunit-file=${basedir}/build/logs/nosetests.xml" />
+     <arg value="--with-coverage" />
+     <arg value="--cover-xml" />
+     <arg value="--cover-xml-file=${basedir}/build/logs/coverage.xml" />
+   </exec>
  </target>
 
 </project>
