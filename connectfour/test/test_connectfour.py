@@ -10,7 +10,7 @@ class TestBoard(unittest.TestCase):
 
     def test_turn(self):
         b = connectfour.board.Board()
-        
+
         # p2 can't place token first
         with self.assertRaises(connectfour.exceptions.OutOfTurnError):
             b.placeToken(2, 0)
@@ -172,7 +172,7 @@ class TestBoard(unittest.TestCase):
         self.assertEquals(b.peek(0), 0)
         self.assertEquals(b.getNumberOfMoves(), 0)
         self.assertEquals(b.getMoves(), [])
-        # back at the start, nothing to undo 
+        # back at the start, nothing to undo
         self.assertFalse(b.undo())
 
     def test_score_segment(self):
@@ -211,17 +211,17 @@ class TestBoard(unittest.TestCase):
 
     def test_score(self):
         # 0 1 2 3 4 5 6
-        # . . . . . . . 
-        # . . . . . . . 
-        # . . . . . . . 
-        # 1 . . . . . . 
-        # 1 . . . . . . 
+        # . . . . . . .
+        # . . . . . . .
+        # . . . . . . .
+        # 1 . . . . . .
+        # 1 . . . . . .
         # 1 . 2 2 . . .
         #
         # should result in a score of 2 for player 1
         #
         bf = connectfour.board_factory.BoardFactory()
-        b = bf.generatePlayerOneNextMoveWins()
+        b = bf.generatePlayerOneNextMoveWinsColZero()
         self.assertEquals(b.getRawScores(), [0, 5, 3])
         self.assertEquals(b.getScore(1), 2)
         self.assertEquals(b.getScore(2), -2)
@@ -238,11 +238,11 @@ class TestBoard(unittest.TestCase):
 
         # make sure this board is not considered full
         # 0 1 2 3 4 5 6
-        # . 1 2 1 1 2 . 
-        # . 2 2 1 1 1 . 
-        # . 1 1 1 2 2 . 
-        # 1 2 2 2 1 2 . 
-        # 2 1 2 1 2 1 1 
+        # . 1 2 1 1 2 .
+        # . 2 2 1 1 1 .
+        # . 1 1 1 2 2 .
+        # 1 2 2 2 1 2 .
+        # 2 1 2 1 2 1 1
         # 2 1 2 1 1 2 2
 
 

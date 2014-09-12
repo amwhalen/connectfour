@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="connectfour" default="build">
+
+ <target name="build" depends="prepare,lint"/>
+
+ <target name="build-parallel" depends="prepare,lint"/>
+
+ <target name="clean" description="Cleanup build artifacts">
+  <delete dir="${basedir}/build/logs"/>
+ </target>
+
+ <target name="prepare" depends="clean" description="Prepare for build">
+  <mkdir dir="${basedir}/build/logs"/>
+ </target>
+
+ <target name="lint" description="Perform syntax check of sourcecode files">
+   <exec executable="build/pylint.sh"></exec>
+ </target>
+
+ <target name="test" description="Run unit tests">
+   <exec executable="build/unittest.sh"></exec>
+ </target>
+
+</project>

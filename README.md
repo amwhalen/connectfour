@@ -11,11 +11,11 @@ A method is defined to calculate if the board contains a winning state for eithe
 Here's an example string representation of the 7x6 board:
 ```
 0 1 2 3 4 5 6
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-1 . . . . . . 
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+1 . . . . . .
 1 . . 2 . . .
 ```
 
@@ -25,52 +25,52 @@ Using the Board
 >>> import connectfour
 >>> b = connectfour.board.Board()
 >>> print(b)
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
 >>> b.placeToken(b.getPlayerTurn(), 3)
 True
 >>> b.placeToken(b.getPlayerTurn(), 2)
 True
 >>> print(b)
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . 2 1 . . . 
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . 2 1 . . .
 >>> b.undo()
 True
 >>> print(b)
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . 1 . . . 
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . 1 . . .
 >>> b.reset()
 >>> print(b)
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
 ```
 
 Querying the State of the Game
 ------------------------------
 ```python
 >>> print(b)
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . . . . . . 
-. . 2 1 . . . 
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . . . . . .
+. . 2 1 . . .
 >>> b.isFull()
 False
 >>> b.isColumnFull(3)
@@ -121,6 +121,11 @@ A slow but very smart player. Medium to incredibly difficult.
 
 **HumanPlayer**
 A player with a command line interface in order to interact with a real live person.
+
+Running Tests
+-------------
+From the root directory of this code, run this command:
+```python -m unittest discover connectfour/test
 
 License
 -------
